@@ -1,0 +1,48 @@
+mutation AddNewReview($bookingId: UUID!, $hostelId: UUID!, $userId: UUID!, $comment: String, $rating: Int!) @auth(level: USER) {
+  review_insert(data: {bookingId: $bookingId, hostelId: $hostelId, userId: $userId, comment: $comment, rating: $rating, createdAt_expr: "request.time"})
+}
+
+query GetHostelDetails($id: UUID!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  hostel(id: $id) {
+    id
+    name
+    address
+    city
+    country
+    description
+    averageRating
+    email
+    phoneNumber
+    website
+    roomTypes_on_hostel {
+      id
+      name
+      description
+      capacity
+      amenities
+      pricePerNight
+    }
+    reviews_on_hostel {
+      id
+      userId
+      comment
+      rating
+      createdAt
+    }
+  }
+}
+
+mutation CreateNewBooking($roomTypeId: UUID!, $checkInDate: Date!, $checkOutDate: Date!, $numberOfGuests: Int!, $specialRequests: String, $totalAmount: Float!) @auth(level: USER) {
+  booking_insert(data: {roomTypeId: $roomTypeId, userId_expr: "auth.uid", checkInDate: $checkInDate, checkOutDate: $checkOutDate, numberOfGuests: $numberOfGuests, specialRequests: $specialRequests, totalAmount: $totalAmount, bookingStatus: "pending", createdAt_expr: "request.time"})
+}
+
+query GetAvailableRoomTypes($hostelId: UUID!, $capacity: Int!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  roomTypes(where: {hostelId: {eq: $hostelId}, capacity: {ge: $capacity}}) {
+    id
+    name
+    description
+    capacity
+    amenities
+    pricePerNight
+  }
+}

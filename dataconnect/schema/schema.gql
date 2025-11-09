@@ -1,0 +1,52 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  phoneNumber: String
+  country: String
+}
+
+type Hostel @table {
+  name: String!
+  address: String!
+  city: String!
+  country: String!
+  createdAt: Timestamp!
+  description: String
+  email: String
+  phoneNumber: String
+  website: String
+  averageRating: Float
+}
+
+type RoomType @table {
+  hostel: Hostel!
+  name: String!
+  capacity: Int!
+  pricePerNight: Float!
+  createdAt: Timestamp!
+  description: String
+  amenities: [String]
+}
+
+type Booking @table {
+  user: User!
+  roomType: RoomType!
+  checkInDate: Date!
+  checkOutDate: Date!
+  numberOfGuests: Int!
+  totalAmount: Float!
+  bookingStatus: String!
+  createdAt: Timestamp!
+  specialRequests: String
+}
+
+type Review @table {
+  user: User!
+  hostel: Hostel!
+  booking: Booking!
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+}
